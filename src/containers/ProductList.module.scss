@@ -1,0 +1,6 @@
+.productCard {
+  @apply hidden;
+  &[data-active='true'] {
+    display: block;
+  }
+}
