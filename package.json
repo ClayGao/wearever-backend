@@ -14,10 +14,10 @@
     "dotenv": "^16.4.4",
     "mongodb": "^6.3.0",
     "next": "14.0.4",
-    "playwright": "^1.40.1",
     "react": "^18",
     "react-dom": "^18",
-    "sass": "^1.71.0"
+    "sass": "^1.71.0",
+    "@playwright/test": "^1.39.0"
   },
   "devDependencies": {
     "@types/node": "^20",
