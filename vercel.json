@@ -2,7 +2,7 @@
   "crons": [
     {
       "path": "/api/get-new-products-to-db", 
-      "schedule": "* 12 * * *" 
+      "schedule": "0 12 * * *" 
     }
   ]
 }
