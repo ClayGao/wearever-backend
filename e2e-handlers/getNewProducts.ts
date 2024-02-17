@@ -31,7 +31,6 @@ const gotoAllProductPageWithPages = async (page: Page) => {
           await page.goto(urlWithQs, {
             timeout: 60000,
           });
-          // await page.waitForLoadState("networkidle");
           await page.waitForTimeout(3000);
           await addProductCardToArray(page, urlWithQs);
         } catch(err) {
