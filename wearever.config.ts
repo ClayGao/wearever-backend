@@ -9,7 +9,7 @@ import {
 } from "./e2e-handlers/sitePdpHandler";
 
 export const PLAYWRIGHT_CONFIG = {
-  headless: false, // 無頭模式
+  headless: true, // 無頭模式
 };
 
 type SiteConfig = {
