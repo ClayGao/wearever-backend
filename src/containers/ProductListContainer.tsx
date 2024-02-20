@@ -88,7 +88,7 @@ export const ProductListContainer = ({ products }) => {
         {
           // const isButtonDisabled = product.isAlreadyInSheet || cart.some((p) => p._id === product._id)
           // @ts-ignore
-          const isInCart = cart.some((p) => p._id === product._id);
+          const isInCart = cart.some(({_id}) => _id === product._id);
           const ctaText = product.isAlreadyInSheet ? "Is In Sheet" : isInCart ? "In Cart" : "Add To Cart";
           return (
           <div 
