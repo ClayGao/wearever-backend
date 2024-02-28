@@ -22,18 +22,7 @@ async function getData(): Promise<ProductType[]> {
   return result.json()
 }
 
-
-type ProductsGetterProps = {
-  products: ProductType[]
-}
-
-/**
- * Renders a ProductListContainer component with the given products.
- *
- * @param {ProductsGetterProps} products - the products to be displayed
- * @return {JSX.Element} the rendered ProductListContainer component
- */
-const ProductsGetter: React.FC<ProductsGetterProps> = async () => {
+const ProductsGetter: React.FC = async () => {
   const products = await getData()
   const simplyProducts = products.map((product) => {
     return {
