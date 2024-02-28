@@ -1,14 +1,39 @@
-import { connectToDatabase } from "@/framework/mongodb"
 import { ProductListContainer } from '@/src/containers/ProductListContainer';
+import React from 'react';
 
-
-async function getData() {
-  const { db } = await connectToDatabase();
-  const products = await db.collection('store').find({}).toArray();
-  return products 
+type ProductType = {
+  _id: string
+  name: string
+  price: number
+  image: string
+  description: string
+  createdAt: string
 }
 
-export default async function ProductsGetter() {
+async function getData(): Promise<ProductType[]> {
+  const result = await fetch('https://wearever-backend.vercel.app/api/get-store-products', {
+    next: {
+      revalidate: 600
+    }
+  })
+  if(!result.ok) {
+    throw new Error('Failed to fetch data')
+  }
+  return result.json()
+}
+
+
+type ProductsGetterProps = {
+  products: ProductType[]
+}
+
+/**
+ * Renders a ProductListContainer component with the given products.
+ *
+ * @param {ProductsGetterProps} products - the products to be displayed
+ * @return {JSX.Element} the rendered ProductListContainer component
+ */
+const ProductsGetter: React.FC<ProductsGetterProps> = async () => {
   const products = await getData()
   const simplyProducts = products.map((product) => {
     return {
@@ -20,3 +45,5 @@ export default async function ProductsGetter() {
     <ProductListContainer products={simplyProducts} />
   );
 }
+
+export default ProductsGetter;
