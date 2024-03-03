@@ -68,7 +68,6 @@ export const ProductListContainer = ({ products }) => {
 
   },[cart]);
 
-  if (window.location.hash !=='#claytest') return <div>Nextjs Text</div>
 
   return (
     <div className="flex min-h-screen flex-col items-center justify-between">
