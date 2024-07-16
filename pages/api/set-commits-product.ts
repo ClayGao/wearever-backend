@@ -12,6 +12,7 @@ export default async function handler(
 
   // 假設 objectIds 是一個包含 _id 值的數組
   // 創建要插入的文檔數組
+  // @ts-ignore
   const documentsToInsert = cart.map(cartItem => ({
     ...cartItem,
     _id: new ObjectId(cartItem.id), // 如果 id 不是 ObjectId 實例，需要轉換
@@ -25,6 +26,7 @@ export default async function handler(
     console.log(`成功插入 ${result.insertedCount} 個文檔`);
     res.status(200).json({ message: "commit 成功", insertedCount: result.insertedCount });
   } catch (error) {
+  // @ts-ignore
     if (error.code === 11000) {
       // 處理重複鍵錯誤
       console.log('部分文檔可能已存在，已跳過重複項');

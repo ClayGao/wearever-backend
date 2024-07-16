@@ -24,9 +24,13 @@ const ProductsGetter: React.FC = async () => {
   const products = await getData()
 
   const groupedProducts = products.reduce((acc, product) => {
+    // @ts-ignore
     if(!acc[product.createdAt]) {
+  // @ts-ignore
       acc[product.createdAt] = []
     }
+  // @ts-ignore
+
     acc[product.createdAt].push(product)
     return acc
   });
