@@ -5,6 +5,7 @@ import axios from "axios";
 import { downloadJson } from '@/utils/download-hepler'
 // @ts-ignore
 export const ProductListContainer = ({ products }) => {
+  const [isOpen, setIsOpen] = useState(false);
   const [activeDate, setActiveDate] = useState("All");
   const [cart, setCart] = useState([]);
   const dateList = useMemo(() => {
@@ -69,6 +70,10 @@ export const ProductListContainer = ({ products }) => {
     })
 
   },[cart]);
+
+  if(!isOpen) {
+    return <input type="password" onChange={() => setIsOpen(true)} />
+  }
 
   return (
     <div className="flex min-h-screen flex-col items-center overflow-hidden w-full">

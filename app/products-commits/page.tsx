@@ -1,5 +1,6 @@
 import { ProductListContainer } from '@/src/containers/ProductListContainer';
 import React from 'react';
+import { downloadJson } from '@/utils/download-hepler'
 
 type ProductType = {
   _id: string
@@ -23,6 +24,10 @@ async function getData(): Promise<ProductType[]> {
 const ProductsGetter: React.FC = async () => {
   const products = await getData()
 
+  if (!products.length) {
+    return <div>Failed to fetch data</div>
+  }
+
   const groupedProducts = products.reduce((acc, product) => {
     // @ts-ignore
     if(!acc[product.createdAt]) {
@@ -33,7 +38,12 @@ const ProductsGetter: React.FC = async () => {
 
     acc[product.createdAt].push(product)
     return acc
-  });
+  }, {});
+
+  // const onDownloadClick = (products:any) => {
+  //   const jsonStrigify = JSON.stringify(products)
+  //   downloadJson(jsonStrigify, 'cart.json')
+  // }
 
   console.log({groupedProducts})
   const simplyProducts = products.map((product) => {
@@ -43,8 +53,19 @@ const ProductsGetter: React.FC = async () => {
     }
   }).reverse()
   return (    
-    <ProductListContainer products={simplyProducts} />
-  );
+    Object.entries(groupedProducts).map(([date, products]) => {
+      return (
+        <div key={date}>
+          <p>{date}</p>
+            
+           {// @ts-ignore
+           products.map((product) => {
+              return <div key={product.name}>{product.name}</div>
+            })}
+        </div>
+      )
+    }
+  ));
 }
 
 export default ProductsGetter;
