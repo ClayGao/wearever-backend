@@ -11,7 +11,7 @@ type ProductType = {
 }
 
 async function getData(): Promise<ProductType[]> {
-  const result = await fetch('https://wearever-backend.vercel.app/api/get-store-products', {
+  const result = await fetch('https://wearever-backend.vercel.app/api/get-commit-products', {
     cache: 'no-store', 
   })
   if(!result.ok) {
@@ -22,6 +22,16 @@ async function getData(): Promise<ProductType[]> {
 
 const ProductsGetter: React.FC = async () => {
   const products = await getData()
+
+  const groupedProducts = products.reduce((acc, product) => {
+    if(!acc[product.createdAt]) {
+      acc[product.createdAt] = []
+    }
+    acc[product.createdAt].push(product)
+    return acc
+  });
+
+  console.log({groupedProducts})
   const simplyProducts = products.map((product) => {
     return {
       ...product,

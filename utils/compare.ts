@@ -2,7 +2,7 @@ export type Item = {
   link: string;
   previewImg: string;
   name: string;
-  createAt: string;
+  createdAt: string;
 };
 
 // 回傳 B 有，A 沒有的元素
