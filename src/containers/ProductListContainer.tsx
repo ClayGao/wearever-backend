@@ -1,31 +1,39 @@
+/* eslint-disable jsx-a11y/alt-text */
+/* eslint-disable @next/next/no-img-element */
 'use client';
-import { useState, useMemo, useCallback } from "react";
+import { useState, useMemo, useCallback, useEffect } from "react";
 import style from './ProductList.module.scss'
 import axios from "axios";
-import { downloadJson } from '@/utils/download-hepler'
+import type { Product } from '@/types';
 // @ts-ignore
-export const ProductListContainer = ({ products }) => {
+export const ProductListContainer:React.FC<{products: Product[]}> = ({ products }) => {
+  const [isLoading, setIsLoading] = useState(false);
   const [isOpen, setIsOpen] = useState(false);
-  const [activeDate, setActiveDate] = useState("All");
   const [cart, setCart] = useState([]);
   const dateList = useMemo(() => {
-    // @ts-ignore
+      // @ts-ignore
     const createdAtList: string[] = products.map(({createdAt}) => createdAt)
     return ['All', ...Array.from(new Set(createdAtList))].slice(0,30) || ["All"];
+  }, [products]);
+  const [activeDate, setActiveDate] = useState(dateList[1]);
+
+  const uniqueProducts = useMemo(() => {
+    const uniqueMap = new Map();
+    
+    products.forEach((product) => {
+      if (!uniqueMap.has(product.name)) {
+        uniqueMap.set(product.name, product);
+      }
+    });
+    
+    return Array.from(uniqueMap.values());
   }, [products]);
 
   const onDateClick = (date: string) => {
     setActiveDate(date);
   }
 
-  const onAddToCartBtnClick = (product: any) => {
-    // if(product.isAlreadyInSheet) {
-    //   axios.post('/api/set-store-product', {
-    //     ids: [product._id],
-    //     action: false
-    //   });
-    //   return
-    // }
+  const onAddToCartBtnClick = (product: Product) => {
     // @ts-ignore
     if(cart.find((p) => p._id === product._id)) {
       alert('The Same id Already in cart');
@@ -40,12 +48,16 @@ export const ProductListContainer = ({ products }) => {
     setCart([...cart, product]);
   }
 
-  const removeItemFromCart = (product: any) => {
+  const removeItemFromCart = (product: Product) => {
     // @ts-ignore
     setCart(cart.filter((p) => p._id !== product._id));
   }
 
   const onExportClick = useCallback(() => {
+    if(isLoading) {
+      return;
+    }
+    setIsLoading(true);
     // @ts-ignore
     const ids = cart.map((p) => p._id);
     Promise.all([
@@ -57,41 +69,39 @@ export const ProductListContainer = ({ products }) => {
         cart
       })
     ])
-    // .then(() => {
-    //   console.log('success');
-    //   const cartJson = JSON.stringify(cart);
-    //   downloadJson(cartJson, 'cart.json');
-    // })
     .then(() => {
       console.log('success');
       setCart([]);
     }).catch((error) => {
       console.log({error});
+    }).finally(() => {
+      setIsLoading(false);
     })
 
-  },[cart]);
+  },[cart, isLoading]);
 
   if(!isOpen) {
     return <input type="password" onChange={() => setIsOpen(true)} />
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center overflow-hidden w-full">
-      <div className="fixed h-40 bg-slate-300 w-full py-2 px-4">
+    <div className="flex min-h-screen flex-col items-center overflow-hidden w-full relative">
+      <div className={`bg-white flex flex-col w-full py-2 px-4 border-2 border-gray-800 top-0 ${activeDate === "All" ? "fixed" : "mb-2"}`}>
         <div className="flex justify-between">
-          <div>Cart Number: {cart.length}</div>
-          <button onClick={onExportClick}>Export</button>
+          <div>SUM: {cart.length}</div>
+          <button onClick={onExportClick}>送出</button>
         </div>
-        {/* @ts-ignore */}
-        {cart.map((product) => <img onClick={() => removeItemFromCart(product)} className="cursor-pointer inline-block" key={product._id} src={product.previewImg} width={30} height={30} />)}
+        <div className="flex flex-wrap">
+          {/* @ts-ignore */}
+          {cart.map((product) => <img onClick={() => removeItemFromCart(product)} className="cursor-pointer inline-block" key={product._id} src={product.previewImg} width={35} />)}
+        </div>
+        <div className="flex w-full overflow-x-auto gap-1 py-2">
+          {dateList.map(date => <div key={date} onClick={() => onDateClick(date)} className={style.dateSelector} data-active={date === activeDate}>{date}</div>)}
+        </div>
       </div>
-      <div>actives: {activeDate}</div>
-      <div className="flex mt-40 w-full overflow-x-auto gap-1 py-2">
-        {dateList.map(date => <div key={date} onClick={() => onDateClick(date)} className={style.dateSelector} data-active={date === activeDate}>{date}</div>)}
-      </div>
-      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-6 gap-2">
         {/* @ts-ignore */}
-        {products.map(product => 
+        {uniqueProducts.map(product => 
           {
             // const isButtonDisabled = product.isAlreadyInSheet || cart.some((p) => p._id === product._id)
             // @ts-ignore

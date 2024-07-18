@@ -1,16 +1,9 @@
 import { ProductListContainer } from '@/src/containers/ProductListContainer';
 import React from 'react';
+import type { Product } from '@/types';
 
-type ProductType = {
-  _id: string
-  name: string
-  price: number
-  image: string
-  description: string
-  createdAt: string
-}
 
-async function getData(): Promise<ProductType[]> {
+async function getData(): Promise<Product[]> {
   const result = await fetch('https://wearever-backend.vercel.app/api/get-store-products', {
     cache: 'no-store', 
   })

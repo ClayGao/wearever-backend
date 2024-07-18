@@ -1,17 +1,10 @@
-import { ProductListContainer } from '@/src/containers/ProductListContainer';
+import  CommitListContainer from '@/src/containers/CommitListContainer';
+import type { Product } from '@/types';
 import React from 'react';
-import { downloadJson } from '@/utils/download-hepler'
+import Link from 'next/link';
 
-type ProductType = {
-  _id: string
-  name: string
-  price: number
-  image: string
-  description: string
-  createdAt: string
-}
 
-async function getData(): Promise<ProductType[]> {
+async function getData(): Promise<Product[]> {
   const result = await fetch('https://wearever-backend.vercel.app/api/get-commit-products', {
     cache: 'no-store', 
   })
@@ -28,44 +21,20 @@ const ProductsGetter: React.FC = async () => {
     return <div>Failed to fetch data</div>
   }
 
-  const groupedProducts = products.reduce((acc, product) => {
+  const groupedProducts: { [key: string]: Product[] } = products.reduce((acc, product) => {
     // @ts-ignore
-    if(!acc[product.createdAt]) {
-  // @ts-ignore
-      acc[product.createdAt] = []
+    if(!acc[product.commitedAt]) {
+    // @ts-ignore
+      acc[product.commitedAt] = []
     }
-  // @ts-ignore
-
-    acc[product.createdAt].push(product)
+    // @ts-ignore
+    acc[product.commitedAt].push(product)
     return acc
   }, {});
-
-  // const onDownloadClick = (products:any) => {
-  //   const jsonStrigify = JSON.stringify(products)
-  //   downloadJson(jsonStrigify, 'cart.json')
-  // }
-
-  console.log({groupedProducts})
-  const simplyProducts = products.map((product) => {
-    return {
-      ...product,
-      _id: product._id.toString()
-    }
-  }).reverse()
+  
   return (    
-    Object.entries(groupedProducts).map(([date, products]) => {
-      return (
-        <div key={date}>
-          <p>{date}</p>
-            
-           {// @ts-ignore
-           products.map((product) => {
-              return <div key={product.name}>{product.name}</div>
-            })}
-        </div>
-      )
-    }
-  ));
+    <CommitListContainer groupedProducts={groupedProducts} />
+  )
 }
 
 export default ProductsGetter;

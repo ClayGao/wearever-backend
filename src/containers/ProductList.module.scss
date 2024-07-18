@@ -1,12 +1,12 @@
 .productCard {
-  @apply hidden p-1;
+  @apply hidden;
   &[data-active="true"] {
     display: block;
   }
 }
 
 .dateSelector {
-  @apply border-2 cursor-pointer p-4 rounded-md border-orange-300;
+  @apply border-2 cursor-pointer py-2 px-1 rounded-sm border-gray-950;
   &[data-active="true"] {
     @apply bg-gray-200;
   }
